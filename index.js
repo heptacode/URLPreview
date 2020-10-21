@@ -3,8 +3,8 @@ const cheerio = require("cheerio");
 
 exports.handler = async event => {
   let statusCode = 200;
+  let title = "";
   let meta = {};
-  let ogmeta = {};
   let link = {};
   let keys = [];
   let result;
@@ -12,6 +12,8 @@ exports.handler = async event => {
     let url = event.queryStringParameters.url;
     let res = await axios.get(url);
     let $ = cheerio.load(res.data);
+
+    title = $(`title`).text();
 
     $(`meta[name]`)
       .toArray()
@@ -22,7 +24,7 @@ exports.handler = async event => {
     $(`meta[property]`)
       .toArray()
       .forEach(el => {
-        ogmeta[el.attribs.property] = el.attribs.content;
+        meta[el.attribs.property] = el.attribs.content;
       });
 
     $(`link[rel]`)
@@ -41,7 +43,7 @@ exports.handler = async event => {
         }
       });
 
-    result = { meta: meta, ogmeta: ogmeta, link: link };
+    result = { title: title, meta: meta, link: link };
   } catch (err) {
     statusCode = 200;
     result = err;
