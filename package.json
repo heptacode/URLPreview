@@ -7,17 +7,13 @@
     "serve": "nodemon nodemon.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "heptacode(admin@hyunwoo.kim)",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.20.0",
     "cheerio": "^1.0.0-rc.3"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.22",
-    "@types/node": "^14.14.0",
-    "nodemon": "^2.0.6",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "nodemon": "^2.0.6"
   }
 }

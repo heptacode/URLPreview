@@ -1,15 +1,18 @@
-import axios from "axios";
-import * as cheerio from "cheerio";
+const axios = require("axios");
+const cheerio = require("cheerio");
 
-let meta = {},
-  ogmeta = {},
-  link = {},
-  keys = [];
-
-let fetch = async () => {
+exports.handler = async event => {
+  let statusCode = 200;
+  let meta = {};
+  let ogmeta = {};
+  let link = {};
+  let keys = [];
+  let result;
   try {
-    let response = await axios.get("https://hyunwoo.kim");
-    let $ = cheerio.load(response.data);
+    let url = event.queryStringParameters.url;
+    let res = await axios.get(url);
+    let $ = cheerio.load(res.data);
+
     $(`meta[name]`)
       .toArray()
       .forEach(el => {
@@ -37,10 +40,15 @@ let fetch = async () => {
           link[_key] = el.attribs.href;
         }
       });
-    console.log(link);
-  } catch (err) {
-    console.log(err);
-  }
-};
 
-fetch();
+    result = { meta: meta, ogmeta: ogmeta, link: link };
+  } catch (err) {
+    statusCode = 200;
+    result = err;
+  }
+  const response = {
+    statusCode,
+    body: JSON.stringify(result),
+  };
+  return response;
+};
