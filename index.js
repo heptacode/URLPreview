@@ -2,7 +2,6 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 exports.handler = async event => {
-  let statusCode = 200;
   let title = "";
   let meta = {};
   let link = {};
@@ -17,39 +16,38 @@ exports.handler = async event => {
 
     $(`meta[name]`)
       .toArray()
-      .forEach(el => {
-        meta[el.attribs.name] = el.attribs.content;
+      .forEach(tag => {
+        meta[tag.attribs.name] = tag.attribs.content;
       });
 
     $(`meta[property]`)
       .toArray()
-      .forEach(el => {
-        meta[el.attribs.property] = el.attribs.content;
+      .forEach(tag => {
+        meta[tag.attribs.property] = tag.attribs.content;
       });
 
     $(`link[rel]`)
       .toArray()
-      .forEach(el => {
-        let _key = el.attribs.rel;
+      .forEach(tag => {
+        let _key = tag.attribs.rel;
         keys.push(_key);
         if (keys.indexOf(_key)) {
           if (!Array.isArray(link[_key])) {
-            link[_key] = [el.attribs.href];
+            link[_key] = [tag.attribs.href];
           } else {
-            link[_key].push(el.attribs.href);
+            link[_key].push(tag.attribs.href);
           }
         } else {
-          link[_key] = el.attribs.href;
+          link[_key] = tag.attribs.href;
         }
       });
 
     result = { title: title, meta: meta, link: link };
   } catch (err) {
-    statusCode = 200;
     result = err;
   }
   const response = {
-    statusCode,
+    200,
     body: JSON.stringify(result),
   };
   return response;
